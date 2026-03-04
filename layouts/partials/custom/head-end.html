@@ -13,11 +13,15 @@
   {{ end }}
 {{ end }}
 
-{{- if .Site.Params.adsenseId -}}  
+{{- if .Site.Params.adsenseId -}}
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{- .Site.Params.adsenseId | safeJS -}}" crossorigin="anonymous"></script>
-{{- end -}} 
+{{- end -}}
 
-{{- if .Site.Params.umamiKey -}}  
+{{- if .Site.Params.wwgg -}}
+<script type="text/javascript" charset="UTF-8" src="https://cdn.wwads.cn/js/makemoney.js" async></script>
+{{- end -}}
+
+{{- if .Site.Params.umamiKey -}}
 <script defer src="https://cloud.umami.is/script.js" data-website-id="{{- .Site.Params.umamiKey | safeJS -}}"></script>
 {{- end -}} 
 
