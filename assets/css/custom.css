@@ -4,6 +4,7 @@
 
 h1:first-of-type {
   /* display: none; */
+  text-align: center;
 }
 
 code, kbd, samp, pre {

@@ -5,7 +5,7 @@ name: Translate New and Specific EN Content
 on:
   workflow_dispatch:
   schedule:
-    - cron: '10 22 * * *' # 每天 UTC 时间 0 点运行 (北京时间6点10)
+    - cron: '10 4 * * *' # 每天 UTC 时间 4 点运行 (北京时间12点10)
 
 permissions:
   contents: write
@@ -29,11 +29,14 @@ jobs:
           cp -vf content/cn/privacy-policy.md content/en/privacy-policy.md || echo "Warning: content/cn/privacy-policy.md not found."
           cp -vf content/cn/terms-of-service.md content/en/terms-of-service.md || echo "Warning: content/cn/terms-of-service.md not found."
           
-          echo "正在处理任意深度子目录下的 _index.md (不使用 nullglob)..."
+          echo "正在处理任意深度子目录下的 _index.md (跳过站点根首页 content/cn/_index.md)..."
           find content/cn/ -type f -name "_index.md" -print0 | while IFS= read -r -d $'\0' src_file; do
-            # src_file 会是例如: content/cn/some/subdir/2025/_index.md
-            # 这一步 find 已经确保了 src_file 是一个实际存在的文件，所以不需要额外的 -f 检查
-            
+            # 保留英文首页 content/en/_index.md，不再用中文根首页覆盖它
+            if [ "$src_file" = "content/cn/_index.md" ]; then
+              echo "跳过根首页: $src_file"
+              continue
+            fi
+
             relative_path_to_cn_content="${src_file#content/cn/}" # 例如: some/subdir/2025/_index.md
             
             dest_file="content/en/${relative_path_to_cn_content}"
@@ -333,9 +336,9 @@ jobs:
                           date_file_match = re.match(r"(\d{4})-(\d{2})-(\d{2})(?:[._-].*|\.md$)", base_fn)
                           if date_file_match:
                               year, month, day = date_file_match.groups() # Capture year, month, and day
-                              print(f"  - Applying 'MM-DD-Daily' title rule for date file: {base_fn}")
-                              parsed_fm['title'] = f"{month}-{day}-Daily AI News Daily" # Use month and day
-                              parsed_fm['linkTitle'] = f"{month}-{day}-Daily"
+                              print(f"  - Applying 'AI News Daily MM-DD' title rule for date file: {base_fn}")
+                              parsed_fm['title'] = f"AI News Daily {month}-{day}" # Use month and day
+                              parsed_fm['linkTitle'] = f"{month}-{day} AI News"
                           
                           # NEW: Update 'next' field for _index.md
                           if base_fn == "_index.md":
@@ -360,10 +363,10 @@ jobs:
                           if base_fn == "about.md":
                               print(f"  - Skipping description update for {base_fn}")
                           else:
-                              print(f"  - Attempting to update description for: {base_fn} (from '1.' list item)")
+                              print(f"  - Attempting to update description for: {base_fn} (from first code block)")
                               description_content_found = False
-                              # NEW: Regex to find the first numbered list item "1. " and capture its content
-                              numbered_list_match = re.search(r"^\s*1\.\s+(.*)", translated_body, re.MULTILINE)
+                              # NEW: 从第一个 ``` 到第二个 ``` 之间截取内容
+                              code_block_match = re.search(r"```(?:[\w+-]+)?\s*\n?(.*?)\n?```", translated_body, re.DOTALL)
 
                               if base_fn == "_index.md":
                                     # 如果是 _index.md 文件，则使用默认的 description
@@ -372,10 +375,10 @@ jobs:
                                     log_preview = default_description_en[:50].replace('\n', ' ')
                                     print(f"    - Is _index.md, setting description to default: '{log_preview}...'")
                               else:
-                                if numbered_list_match:
-                                    text_from_list_item = numbered_list_match.group(1).strip()
-                                    if text_from_list_item: # Ensure the item itself isn't empty after "1. "
-                                        plain_text_for_desc = strip_markdown_html(text_from_list_item)
+                                if code_block_match:
+                                    text_from_code_block = code_block_match.group(1).strip()
+                                    if text_from_code_block:
+                                        plain_text_for_desc = strip_markdown_html(text_from_code_block)
                                         new_description = plain_text_for_desc[:157] # Truncate for "..."
                                         if len(plain_text_for_desc) > 160:
                                             new_description += "."
@@ -384,22 +387,22 @@ jobs:
                                             parsed_fm['description'] = new_description
                                             description_content_found = True
                                             log_description_preview = new_description[:50].replace('\n', ' ')
-                                            print(f"    - Updated description from '1.' list item to: '{log_description_preview}...'")
+                                            print(f"    - Updated description from first code block to: '{log_description_preview}...'")
                               
                               if not description_content_found:
                                   if 'description' in parsed_fm:
                                       # If _index.md specifically should have description: '', this handles it
-                                      # if no content from "1." is found for it.
-                                      parsed_fm['description'] = "" 
-                                      print(f"    - No valid content from '1.' list item. Cleared/set existing description to empty for {base_fn}.")
+                                      # if no content from first code block is found for it.
+                                      parsed_fm['description'] = ""
+                                      print(f"    - No valid content from first code block. Cleared/set existing description to empty for {base_fn}.")
                                   else:
                                       # If the file is _index.md and it didn't have a description key,
                                       # and we want to enforce description: '' as per example:
                                       if base_fn == "_index.md":
                                           parsed_fm['description'] = ""
-                                          print(f"    - No valid content from '1.' list item. Set 'description: \"\"' for _index.md as per default.")
+                                          print(f"    - No valid content from first code block. Set 'description: \"\"' for _index.md as per default.")
                                       else:
-                                          print(f"    - No valid content from '1.' list item. 'description' key not present and not added for {base_fn}.") # Corrected variable base_fm to base_fn
+                                          print(f"    - No valid content from first code block. 'description' key not present and not added for {base_fn}.")
                       # --- End of Front Matter Modifications ---
 
                       final_front_matter_str = ""
@@ -467,6 +470,64 @@ jobs:
                   traceback.print_exc()
         shell: python
 
+      - name: Post-process translated links and Generate Cards
+        if: steps.find_changed_files.outputs.continue == 'true'
+        run: |
+          echo "Post-processing translated files..."
+          # 1. 基础链接替换 (Prefix internal links with /en/)
+          find content/en/ -type f -name "*.md" -exec sed -i 's|link="/|link="/en/|g; s|(/|(/en/|g; s|/en/en/|/en/|g' {} +
+          
+          # 2. 为英文首页生成最近 6 条日报卡片
+          TARGET_INDEX="content/en/_index.md"
+          if [ -f "$TARGET_INDEX" ]; then
+            echo "Generating 6 latest cards for $TARGET_INDEX..."
+            ALL_EN_NOTES=$(find content/en -type f -name "????-??-??.md" | sort -r)
+            LATEST_6_EN_NOTES=$(echo "$ALL_EN_NOTES" | head -n 6)
+            
+            CARDS_FILE=$(mktemp)
+            while read -r note_path; do
+              if [ -z "$note_path" ]; then continue; fi
+              note_filename=$(basename "$note_path" .md)
+              rel_link="/en/$(echo "$note_filename" | cut -c 1-7)/${note_filename}"
+              
+              n_y=$(echo "$note_filename" | cut -c 1-4)
+              n_m=$(echo "$note_filename" | cut -c 6-7)
+              n_d=$(echo "$note_filename" | cut -c 9-10)
+              note_display_title="${n_y}/${n_m}/${n_d}"
+              
+              n_desc=$(grep "^description:" "$note_path" | head -n 1 | sed 's/^description: //;s/^"//;s/"$//')
+              if [ -z "$n_desc" ]; then n_desc="Click to read daily AI news digest..."; fi
+              n_desc=$(echo "$n_desc" | python3 -c 'import sys; print(sys.stdin.read().replace("```", "").replace("`", "").replace("\"", "\\\"").strip()[:100])')
+
+              echo "  {{< card link=\"${rel_link}\" title=\"AI News Daily ${note_display_title}\" subtitle=\"${n_desc}\" icon=\"calendar\" >}}" >> "$CARDS_FILE"
+            done <<< "$LATEST_6_EN_NOTES"
+
+            # 替换占位符 (使用注释标记支持重复更新)
+            python3 -c "import re, sys; index_path = sys.argv[1]; cards_path = sys.argv[2]; cards = open(cards_path, encoding='utf-8').read().strip(); content = open(index_path, encoding='utf-8').read(); pattern = r'<!-- LATEST_6_CARDS_START -->.*?<!-- LATEST_6_CARDS_END -->'; replacement = f'<!-- LATEST_6_CARDS_START -->\n{cards}\n<!-- LATEST_6_CARDS_END -->'; new_content = re.sub(pattern, replacement, content, flags=re.DOTALL) if re.search(pattern, content, re.DOTALL) else content.replace('LATEST_6_CARDS', replacement); open(index_path, 'w', encoding='utf-8').write(new_content)" "$TARGET_INDEX" "$CARDS_FILE"
+            rm "$CARDS_FILE"
+            
+            # 替换日期占位符 (支持重复更新)
+            LATEST_EN_NOTE=$(echo "$ALL_EN_NOTES" | head -n 1)
+            if [ -n "$LATEST_EN_NOTE" ]; then
+              L_EN_FN=$(basename "$LATEST_EN_NOTE" .md)
+              L_EN_MO=$(echo "$L_EN_FN" | cut -c 1-7)
+              L_EN_LINK="/en/${L_EN_MO}/${L_EN_FN}"
+
+              if grep -q "LATEST_DAILY_URL" "$TARGET_INDEX"; then
+                sed -i "s|LATEST_DAILY_URL|${L_EN_LINK}|g" "$TARGET_INDEX"
+              else
+                sed -i "s|link=\"[^\"]*\" >}}🚀 [^<{]*|link=\"${L_EN_LINK}\" >}}🚀 Read Today's News|g" "$TARGET_INDEX"
+              fi
+
+              if grep -q "LATEST_ARCHIVE_URL" "$TARGET_INDEX"; then
+                sed -i "s|LATEST_ARCHIVE_URL|${L_EN_LINK}|g" "$TARGET_INDEX"
+              else
+                sed -i "s|Archive\]([^)]*)|Archive](${L_EN_LINK})|g" "$TARGET_INDEX"
+              fi
+            fi
+          fi
+          echo "Post-processing complete."
+
       - name: Commit and push changes
         run: |
           git config --local user.email "action@github.com"
@@ -479,4 +540,4 @@ jobs:
             echo "检测到文件变更，正在提交..."
             git commit -m "chore(i18n): Auto-translate EN content with FM updates"
             git push
-          fi          
+          fi

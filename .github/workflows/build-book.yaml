@@ -163,6 +163,7 @@ jobs:
               YEAR=$(echo "$filename" | cut -c 1-4)
               MONTH=$(echo "$filename" | cut -c 6-7)
               DAY=$(echo "$filename" | cut -c 9-10)
+              MONTH_NO_ZERO=$(echo $MONTH | sed 's/^0*//')
               DAY_NO_ZERO=$(echo $DAY | sed 's/^0*//')
               TARGET_MONTH_DIR="$TARGET_CONTENT_DIR/$YEAR_MONTH"
 
@@ -179,25 +180,21 @@ jobs:
 
               weight=$((32 - DAY_NO_ZERO))
               
-              local_description=""
-              if grep -q "AI内容摘要" "$source_file"; then
-                local_description=$(grep -A 5 "AI内容摘要" "$source_file" | sed -n '/AI内容摘要/!p' | sed 's/^[#* >]*//g' | python3 -c 'import sys; print(sys.stdin.read().replace("\n", " ").replace("```", "").strip()[:150])')
-                # local_description="$DEFAULT_SUBTITLE 。$local_description"
-              elif grep -q "AI产品与功能更新" "$source_file"; then
-                local_description=$(grep -A 5 "AI产品与功能更新" "$source_file" | sed -n '/AI产品与功能更新/!p' | sed 's/^[#* >]*//g' | python3 -c 'import sys; print(sys.stdin.read().replace("\n", " ").replace("```", "").strip()[:150])')
-                # local_description="$DEFAULT_SUBTITLE 。$local_description"
-              else
-                echo "警告: 文件 '$source_file' 中未找到摘要。将使用 hugo.yaml 中的默认 description。"
+              # 提取摘要：从第一个代码块中提取
+              local_description=$(awk '/^```/{count++; next} count==1{print}' "$source_file" | python3 -c 'import sys; print(sys.stdin.read().replace("\n", " ").replace("```", "").replace("`", "").strip()[:150])')
+              
+              if [ -z "$local_description" ]; then
+                echo "警告: 从 '$source_file' 中未提取到摘要。将使用 hugo.yaml 中的默认 description。"
                 local_description="$DEFAULT_DESCRIPTION"
               fi
-              # Escape quotes for YAML frontmatter
-              local_description=$(echo "$local_description" | python3 -c 'import sys; text = sys.stdin.read(); print(text.replace("\"", "\\\""))')
+              # Replace English quotes with Chinese quotes for YAML frontmatter
+              local_description=$(echo "$local_description" | python3 -c 'import sys; text = sys.stdin.read().replace("\\\"", "\""); parts = text.split("\""); res = parts[0]; [(res := res + ("”" if res.count("“") > res.count("”") else "“") + p) for p in parts[1:]]; print(res.strip())')
 
 
               (
-                printf -- "---\nlinkTitle: %s-%s-日报\ntitle: %s-%s-日报-AI资讯日报\nweight: %d\nbreadcrumbs: false\ncomments: true\ndescription: \"%s\"\n---\n\n" \
-                  "$MONTH" "$DAY" "$MONTH" "$DAY" "$weight" "$local_description"
-                cat "$source_file"
+                printf -- "---\nlinkTitle: %s-%s AI资讯\ntitle: AI资讯日报 %s/%s/%s\nweight: %d\nbreadcrumbs: false\ncomments: true\ndescription: \"%s\"\n---\n\n" \
+                  "$MONTH" "$DAY" "$YEAR" "$MONTH_NO_ZERO" "$DAY_NO_ZERO" "$weight" "$local_description"
+                sed '1{/^## /d}' "$source_file"
               ) > "$TARGET_FILE"
               echo "已归档到 $TARGET_FILE (或已更新)"
             done
@@ -255,21 +252,90 @@ jobs:
           # --- 4. 更新主索引页面 ---
           echo "--- 步骤 4: 更新主索引页面 (content/cn/_index.md) ---"
           TARGET_INDEX="$TARGET_CONTENT_DIR/_index.md"
-          
-          FRONTMATTER="---\nlinkTitle: AI Daily\ntitle: AI Daily-AI资讯日报\nbreadcrumbs: false\ncomments: true\n"
-          # The 'next' link should point to the second latest note, which is now an archived page.
-          if [ -n "$SECOND_LATEST_NOTE" ] && [ "$LATEST_NOTE" != "$SECOND_LATEST_NOTE" ]; then # Ensure there IS a second latest note
-            FILENAME_SECOND_LATEST=$(basename "$SECOND_LATEST_NOTE" .md)
-            YEAR_MONTH_SECOND_LATEST=$(echo "$FILENAME_SECOND_LATEST" | cut -c 1-7)
-            NEXT_LINK="${YEAR_MONTH_SECOND_LATEST}/${FILENAME_SECOND_LATEST}"
-            FRONTMATTER+="next: /${NEXT_LINK}\n" # Assuming absolute path from site root
-          fi
-          
-          FRONTMATTER+="description: \"${LATEST_DESCRIPTION}\"\n" # LATEST_DESCRIPTION is already escaped
-          FRONTMATTER+="cascade:\n  type: docs\n---\n\n"
 
-          printf "%b" "$FRONTMATTER" > "$TARGET_INDEX"
-          cat "$LATEST_NOTE" >> "$TARGET_INDEX"
+          # 提取最新日期信息
+          L_FILENAME=$(basename "$LATEST_NOTE")
+          L_FILENAME_NO_EXT=$(basename "$LATEST_NOTE" .md)
+          L_YEAR=$(echo "$L_FILENAME" | cut -c 1-4)
+          L_MONTH=$(echo "$L_FILENAME" | cut -c 6-7)
+          L_DAY=$(echo "$L_FILENAME" | cut -c 9-10)
+          LATEST_NOTE_MONTH="${L_YEAR}-${L_MONTH}"
+
+          # 构建动态链接
+          LATEST_LINK="/${LATEST_NOTE_MONTH}/${L_FILENAME_NO_EXT}"
+
+          # 1. 替换基础链接占位符 (支持重复更新)
+          if grep -q "LATEST_DAILY_URL" "$TARGET_INDEX"; then
+            sed -i "s|LATEST_DAILY_URL|${LATEST_LINK}|g" "$TARGET_INDEX"
+          else
+            sed -i "s|link=\"[^\"]*\" >}}🚀 阅读今日日报|link=\"${LATEST_LINK}\" >}}🚀 阅读今日日报|g" "$TARGET_INDEX"
+          fi
+
+          if grep -q "LATEST_ARCHIVE_URL" "$TARGET_INDEX"; then
+            sed -i "s|LATEST_ARCHIVE_URL|${LATEST_LINK}|g" "$TARGET_INDEX"
+          else
+            sed -i "s|AI 资讯日报归档]([^)]*)|AI 资讯日报归档](${LATEST_LINK})|g" "$TARGET_INDEX"
+          fi
+
+          # 2. 动态生成最近 6 条日报的卡片
+          echo "--- 步骤 4.1: 生成最近 6 条日报卡片 ---"
+          # Get paths of latest 6 notes
+          LATEST_6_NOTES=$(echo "$ALL_NOTES" | head -n 6)
+          CARDS_FILE=$(mktemp)
+          
+          while read -r note_path; do
+            if [ -z "$note_path" ]; then continue; fi
+            
+            note_filename=$(basename "$note_path" .md)
+            note_year_month=$(echo "$note_filename" | cut -c 1-7)
+            note_link="/${note_year_month}/${note_filename}"
+            
+            # 提取日期
+            n_y=$(echo "$note_filename" | cut -c 1-4)
+            n_m=$(echo "$note_filename" | cut -c 6-7)
+            n_d=$(echo "$note_filename" | cut -c 9-10)
+            note_display_title="${n_y}/${n_m}/${n_d}"
+            
+            # 提取摘要 (优先从已归档文件的 frontmatter 中提取，如果失败则从正文第一个代码块提取)
+            # 修正 note_path 为归档后的路径
+            archived_note_path="${TARGET_CONTENT_DIR}/${note_year_month}/${note_filename}.md"
+            n_desc=$(grep "^description:" "$archived_note_path" | head -n 1 | sed 's/^description: //;s/^"//;s/"$//' | grep -v "个人每日整理的AI资讯站")
+            
+            if [ -z "$n_desc" ]; then
+              n_desc=$(awk '/^```/{count++; next} count==1{print}' "$archived_note_path" | python3 -c 'import sys; print(sys.stdin.read().replace("\n", " ").replace("```", "").replace("`", "").replace("\"", "\\\"").strip()[:100])')
+            fi
+            
+            if [ -z "$n_desc" ]; then
+              n_desc="点击阅读当日 AI 资讯精华..."
+            fi
+            
+            n_desc=$(echo "$n_desc" | python3 -c 'import sys; text = sys.stdin.read().replace("```", "").replace("`", "").replace("\\\"", "\""); parts = text.split("\""); res = parts[0]; [(res := res + ("”" if res.count("“") > res.count("”") else "“") + p) for p in parts[1:]]; print(res.strip()[:100])')
+            
+            echo "  {{< card link=\"${note_link}\" title=\"AI资讯日报 ${note_display_title}\" subtitle=\"${n_desc}\" icon=\"calendar\" >}}" >> "$CARDS_FILE"
+          done <<< "$LATEST_6_NOTES"
+
+          # 使用 Python 安全地替换 LATEST_6_CARDS (使用注释标记支持重复更新)
+          python3 -c '
+          import os, sys, re
+          index_path = sys.argv[1]
+          cards_path = sys.argv[2]
+          with open(cards_path) as f: cards = f.read().strip()
+          with open(index_path) as f: content = f.read()
+
+          # 尝试匹配带注释标记的区域
+          pattern = r"<!-- LATEST_6_CARDS_START -->.*?<!-- LATEST_6_CARDS_END -->"
+          replacement = f"<!-- LATEST_6_CARDS_START -->\n{cards}\n<!-- LATEST_6_CARDS_END -->"
+
+          if re.search(pattern, content, re.DOTALL):
+              new_content = re.sub(pattern, replacement, content, flags=re.DOTALL)
+          else:
+              # 回退到初次替换逻辑
+              new_content = content.replace("LATEST_6_CARDS", replacement)
+
+          with open(index_path, "w") as f: f.write(new_content)
+          ' "$TARGET_INDEX" "$CARDS_FILE"
+          rm "$CARDS_FILE"
+
           echo "$TARGET_INDEX 更新完成。"
 
       # 第4步：提交 content 目录下的所有修改
