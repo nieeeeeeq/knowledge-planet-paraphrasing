@@ -1,0 +1,36 @@
+# 改写配置
+
+rewrite:
+  # 默认改写强度: light | medium | heavy
+  default_intensity: medium
+
+  # 语言风格: professional | casual | academic
+  style: professional
+
+  # 不改写的专业术语
+  keep_terms:
+    - "GPT-4"
+    - "GPT-4o"
+    - "GPT-5"
+    - "Claude"
+    - "Gemini"
+    - "Transformer"
+    - "LLM"
+    - "AIGC"
+    - "AGI"
+    - "RAG"
+    - "LoRA"
+    - "Stable Diffusion"
+    - "Midjourney"
+    - "Sora"
+    - "OpenAI"
+    - "Anthropic"
+    - "Google DeepMind"
+    - "Meta AI"
+
+  # 改写后篇幅比例限制
+  max_length_ratio: 1.2
+  min_length_ratio: 0.8
+
+  # 语言
+  language: zh-CN

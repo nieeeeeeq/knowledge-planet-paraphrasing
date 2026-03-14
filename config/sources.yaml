@@ -1,0 +1,96 @@
+# 新闻源配置
+# type: rss | webpage
+# mode: digest (仅汇总) | rewrite (仅改写) | both (两者都做)
+# fetch_mode: list (从列表页提取文章链接) | single (直接抓取整页)
+# url_pattern: 正则表达式，用于从列表页过滤文章链接
+# max_articles: 从列表页最多提取几篇文章 (默认5)
+
+sources:
+  # ===== 国内AI综合资讯 =====
+  - name: "AIbase"
+    url: "https://www.aibase.com/zh/news"
+    type: webpage
+    mode: both
+    fetch_mode: list
+    url_pattern: "aibase\\.com/(zh/)?news/\\d+"
+    max_articles: 10
+
+  - name: "量子位"
+    url: "https://www.qbitai.com/"
+    type: webpage
+    mode: both
+    fetch_mode: list
+    url_pattern: "qbitai\\.com/\\d+/\\d+/\\d+"
+    max_articles: 10
+
+  - name: "机器之心"
+    url: "https://www.jiqizhixin.com/"
+    type: webpage
+    mode: digest
+    fetch_mode: single
+
+  - name: "IT之家AI"
+    url: "https://www.ithome.com/tag/AI"
+    type: webpage
+    mode: digest
+    fetch_mode: list
+    url_pattern: "ithome\\.com/0/\\d+/\\d+\\.htm"
+    max_articles: 8
+
+  - name: "36氪快讯"
+    url: "https://36kr.com/newsflashes"
+    type: webpage
+    mode: digest
+    fetch_mode: list
+    url_pattern: "^https://36kr\\.com/newsflashes/\\d+"
+    max_articles: 8
+
+  - name: "品玩"
+    url: "https://www.pingwest.com/"
+    type: webpage
+    mode: digest
+    fetch_mode: list
+    url_pattern: "pingwest\\.com/a/\\d+"
+    max_articles: 5
+
+  # ===== 海外AI资讯 =====
+  - name: "MarkTechPost"
+    url: "https://www.marktechpost.com/"
+    type: webpage
+    mode: digest
+    fetch_mode: list
+    url_pattern: "marktechpost\\.com/\\d+/\\d+/\\d+/"
+    max_articles: 5
+
+  # ===== 前沿研究 =====
+  - name: "HuggingFace Papers"
+    url: "https://huggingface.co/papers"
+    type: webpage
+    mode: digest
+    fetch_mode: single
+
+  - name: "arXiv cs.AI"
+    url: "https://arxiv.org/list/cs.AI/recent"
+    type: webpage
+    mode: digest
+    fetch_mode: single
+
+  # ===== 开源项目 =====
+  - name: "GitHub Trending"
+    url: "https://github.com/trending?since=daily"
+    type: webpage
+    mode: digest
+    fetch_mode: single
+
+  # ===== 社媒/论坛 =====
+  - name: "Reddit AI"
+    url: "https://www.reddit.com/r/artificial/hot/"
+    type: webpage
+    mode: digest
+    fetch_mode: single
+
+  - name: "Hacker News AI"
+    url: "https://hn.algolia.com/?dateRange=last24h&page=0&prefix=true&query=AI&sort=byPopularity&type=story"
+    type: webpage
+    mode: digest
+    fetch_mode: single

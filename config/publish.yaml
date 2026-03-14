@@ -1,0 +1,31 @@
+# 发布渠道配置
+
+hugo:
+  enabled: true
+  content_dir: "content/cn"
+  categories:
+    digest: ""           # 日报放根目录按月份 (与原项目一致)
+    rewrite: "blog"      # 改写文章放blog
+
+zsxq:
+  enabled: true
+  # group_id 从环境变量 ZSXQ_GROUP_ID 读取
+  # cookie 从环境变量 ZSXQ_COOKIE 读取
+  api_base: "https://api.zsxq.com/v2"
+  max_length: 10000
+  add_source: true
+  add_disclaimer: false
+
+  # 发帖频率限制 (避免封号)
+  rate_limit:
+    max_posts_per_day: 5
+    min_interval_minutes: 30
+
+  # 帖子模板
+  post_format: |
+    {title}
+
+    {content}
+
+    ---
+    来源: {source_url}

@@ -5,3 +5,12 @@ resources/
 
 # Editor
 .vscode/
+
+# Node
+scripts/node_modules/
+scripts/dist/
+
+# Env
+.env
+.env.*
+!.env.example

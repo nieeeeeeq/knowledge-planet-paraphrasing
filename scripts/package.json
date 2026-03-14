@@ -1,0 +1,22 @@
+{
+  "name": "knowledge-planet-paraphrasing-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "digest": "tsx scripts/digest.ts",
+    "rewrite": "tsx scripts/rewrite-single.ts",
+    "auto-rewrite": "tsx scripts/auto-rewrite.ts",
+    "test": "tsx scripts/test.ts"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "js-yaml": "^4.1.0",
+    "openai": "^6.29.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

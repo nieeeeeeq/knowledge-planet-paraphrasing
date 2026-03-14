@@ -1,0 +1,64 @@
+name: Rewrite Article
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: '文章URL'
+        required: true
+        type: string
+      intensity:
+        description: '改写强度'
+        required: false
+        type: choice
+        default: 'medium'
+        options:
+          - light
+          - medium
+          - heavy
+      publish_zsxq:
+        description: '发布到知识星球'
+        required: false
+        type: boolean
+        default: true
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  rewrite:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: scripts
+        run: npm install
+
+      - name: Rewrite article
+        working-directory: scripts
+        env:
+          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+          ZSXQ_COOKIE: ${{ secrets.ZSXQ_COOKIE }}
+          ZSXQ_GROUP_ID: ${{ secrets.ZSXQ_GROUP_ID }}
+          INPUT_URL: ${{ inputs.url }}
+          INPUT_INTENSITY: ${{ inputs.intensity }}
+          INPUT_PUBLISH_ZSXQ: ${{ inputs.publish_zsxq }}
+        run: npx tsx rewrite-single.ts
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add content/
+          git diff --staged --quiet || git commit -m "Rewrite: ${{ inputs.url }}"
+          git push
