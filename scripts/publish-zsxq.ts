@@ -35,8 +35,9 @@ export async function publishToZsxq(
     };
   }
 
-  // 组装帖子内容
+  // 组装帖子内容（Markdown → 纯文本）
   let postText = formatPost(options, zsxqConfig);
+  postText = markdownToPlainText(postText);
 
   // 截断超长内容
   if (postText.length > zsxqConfig.max_length) {
@@ -121,6 +122,34 @@ export async function publishBatchToZsxq(
       );
     }
   }
+}
+
+/**
+ * 将 Markdown 转为知识星球纯文本格式
+ */
+function markdownToPlainText(md: string): string {
+  return md
+    // 代码块 → 保留内容
+    .replace(/```\n?([\s\S]*?)\n?```/g, "$1")
+    // ### 标题 → 【标题】
+    .replace(/^#{1,6}\s+\**(.+?)\**\s*$/gm, "\n【$1】\n")
+    // **粗体** → 去掉星号
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    // [文字](URL) → 文字 URL
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, "$1 $2")
+    // ![alt](URL) → 去掉图片
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, "")
+    // `行内代码` → 去掉反引号
+    .replace(/`([^`]+)`/g, "$1")
+    // > 引用 → 去掉引用符号
+    .replace(/^>\s+/gm, "")
+    // markdown 表格 → 去掉
+    .replace(/^\|.*\|$/gm, "")
+    // --- 分隔线 → 空行
+    .replace(/^-{3,}$/gm, "")
+    // 多余空行压缩
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 function formatPost(
