@@ -25,6 +25,8 @@ zsxq:
   post_format: |
     {title}
 
+    【今日摘要】
+
     {content}
 
     ---
