@@ -23,16 +23,18 @@ function createClient(): OpenAI {
 
 const MODEL = "glm-5";
 
-const SYSTEM_PROMPT = `你是一位资深AI科技博主，擅长撰写AI工具介绍和使用教程。你的任务是将一篇文章深度改写为你自己的原创风格。
+const SYSTEM_PROMPT = `你是一位资深AI科技博主，擅长撰写AI工具介绍和使用教程。你的任务是将一篇文章深度改写为你自己的原创中文文章。
 
 改写要求：
+- 如果原文是英文或其他非中文语言，必须翻译为流畅自然的中文
 - 用完全不同的行文方式重新撰写，不保留任何原文句子
 - 保持核心信息和技术细节准确
 - 使用亲切、专业的教程风格，像是在教朋友使用
 - 适当添加你的观点和评价
-- 专业术语（如GPT、Claude、Stable Diffusion等）保持原样
+- 专业术语（如GPT、Claude、Stable Diffusion等）保持英文原样
 - 如有步骤性内容，用清晰的编号步骤呈现
-- 不要出现"本文"、"原文"等字眼，要像是你自己写的`;
+- 不要出现"本文"、"原文"、"翻译"等字眼，要像是你自己用中文写的原创文章
+- 输出必须是中文`;
 
 /**
  * 深度改写一篇文章
@@ -46,17 +48,24 @@ export async function spinArticle(
   const client = createClient();
   const fullText = segments.map((s) => s.text).join("\n\n");
 
-  // 截断过长文章，避免分段过多导致API调用超时或审核失败
+  // 截断过长文章
   const maxInputLength = 6000;
   const trimmedSegments = trimSegments(segments, maxInputLength);
   const trimmedText = trimmedSegments.map((s) => s.text).join("\n\n");
 
-  // 如果文章不太长，整篇一次改写（效果更好）
+  // 先清洗广告和噪音内容
+  console.log("    🧹 清洗广告...");
+  const cleaned = await cleanContent(client, trimmedText);
+
+  // 改写
   let rewritten: string;
-  if (trimmedText.length < 4000) {
-    rewritten = await spinFullArticle(client, trimmedText, config);
+  if (cleaned.length < 4000) {
+    rewritten = await spinFullArticle(client, cleaned, config);
   } else {
-    rewritten = await spinBySegments(client, trimmedSegments, config);
+    const cleanedSegments = [{ index: 0, text: cleaned.slice(0, 3000), charCount: 3000 },
+      { index: 1, text: cleaned.slice(3000), charCount: cleaned.length - 3000 }]
+      .filter(s => s.text.length > 100);
+    rewritten = await spinBySegments(client, cleanedSegments as any, config);
   }
 
   // 补充引言
@@ -86,6 +95,38 @@ export async function spinArticle(
     content: rewritten,
     sourceUrl,
   };
+}
+
+/**
+ * 清洗正文：去除广告、推广、导航等噪音
+ */
+async function cleanContent(client: OpenAI, text: string): Promise<string> {
+  const response = await client.chat.completions.create({
+    model: MODEL,
+    max_tokens: 8192,
+    messages: [
+      {
+        role: "system",
+        content: `你是一位内容编辑，负责从网页正文中提取纯净的文章内容。
+
+严格删除：
+- 广告、推广、会员/VIP引导、打赏/赞助
+- 支付链接、二维码、优惠券
+- 网站导航、页脚、版权声明
+- "关注公众号"、"加群"等引流
+- "上一篇/下一篇"、"相关推荐"
+- 作者简介、网站介绍
+- 评论区
+
+只保留文章核心正文。直接输出清洗结果。`,
+      },
+      {
+        role: "user",
+        content: `清洗以下内容：\n\n${text}`,
+      },
+    ],
+  });
+  return response.choices[0].message.content?.trim() || text;
 }
 
 async function spinFullArticle(
@@ -171,7 +212,7 @@ async function addIntro(client: OpenAI, content: string): Promise<string> {
     messages: [
       {
         role: "user",
-        content: `请为以下文章写一段开头引言（2-3句话，引出主题，吸引读者继续阅读）：\n\n${content.slice(0, 500)}\n\n只输出引言文字。`,
+        content: `请为以下文章写一段中文开头引言（2-3句话，引出主题，吸引读者继续阅读）：\n\n${content.slice(0, 500)}\n\n只输出中文引言文字。`,
       },
     ],
   });
@@ -186,7 +227,7 @@ async function addSummary(client: OpenAI, content: string): Promise<string> {
     messages: [
       {
         role: "user",
-        content: `请为以下文章写一段结尾总结（2-3句话，总结要点，给出建议）：\n\n${content.slice(-800)}\n\n只输出总结文字。`,
+        content: `请为以下文章写一段中文结尾总结（2-3句话，总结要点，给出建议）：\n\n${content.slice(-800)}\n\n只输出中文总结文字。`,
       },
     ],
   });
@@ -222,7 +263,7 @@ async function spinTitle(client: OpenAI, title: string): Promise<string> {
     messages: [
       {
         role: "user",
-        content: `请改写以下文章标题，要求：有吸引力、口语化、像是科技博主写的，保持核心含义不变：\n\n${title}\n\n只输出新标题，不要加引号或说明。`,
+        content: `请将以下文章标题改写为中文，要求：有吸引力、口语化、像是科技博主写的，保持核心含义不变。如果原标题是英文请翻译为中文：\n\n${title}\n\n只输出中文新标题，不要加引号或说明。`,
       },
     ],
   });

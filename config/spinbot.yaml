@@ -1,7 +1,7 @@
 # 自动洗稿模块配置
 
 # 每日改写数量
-daily_limit: 3
+daily_limit: 5
 
 # 文章筛选
 filter:
@@ -14,6 +14,7 @@ filter:
     - "提示词技巧"
     - "开源项目介绍"
     - "模型使用方法"
+    - "技术博客"
   exclude_types:
     - "融资新闻"
     - "政策法规"
@@ -28,6 +29,8 @@ rewrite:
   add_summary: true
   min_length: 800
   max_length: 5000
+  # 非中文内容翻译为中文
+  translate_to_zh: true
 
 # 发布
 publish:
@@ -36,64 +39,13 @@ publish:
   hugo_dir: "blog"
   interval_minutes: 30
 
-# 教程类数据源
+# 数据源（全部海外站点）
 sources:
-  # ===== 国内教程/工具 =====
-  - name: "AIbase"
-    url: "https://www.aibase.com/zh/news"
-    url_pattern: "aibase\\.com/(zh/)?news/\\d+"
-    max_scan: 10
-
-  - name: "量子位"
-    url: "https://www.qbitai.com/"
-    url_pattern: "qbitai\\.com/\\d+/\\d+/\\d+"
-    max_scan: 10
-
-  - name: "小众软件AI"
-    url: "https://www.appinn.com/tag/ai/"
-    url_pattern: "appinn\\.com/[a-z0-9-]+/"
-    max_scan: 8
-
-  - name: "自由迪迪"
-    url: "https://www.freedidi.com/category/ai"
-    url_pattern: "freedidi\\.com/\\d+\\.html"
-    max_scan: 8
-
-  - name: "Toolify"
-    url: "https://www.toolify.ai/zh/news"
-    url_pattern: "toolify\\.ai/zh/ai-news-cn/"
-    max_scan: 8
-
-  - name: "36氪AI"
-    url: "https://www.36kr.com/information/AI/"
-    url_pattern: "^https://36kr\\.com/p/\\d+"
-    max_scan: 8
-
-  - name: "IT之家AI"
-    url: "https://www.ithome.com/tag/AI"
-    url_pattern: "ithome\\.com/0/\\d+/\\d+\\.htm"
-    max_scan: 8
-
-  - name: "品玩"
-    url: "https://www.pingwest.com/"
-    url_pattern: "pingwest\\.com/a/\\d+"
-    max_scan: 5
-
-  - name: "AI-Bot"
-    url: "https://ai-bot.cn/daily-ai-news/"
-    url_pattern: "ai-bot\\.cn/[a-z0-9]+-[a-z0-9-]+/"
-    max_scan: 8
-
-  - name: "腾讯云开发者"
-    url: "https://cloud.tencent.com/developer/column/ai"
-    url_pattern: "cloud\\.tencent\\.com/developer/article/\\d+"
-    max_scan: 5
-
-  # ===== 海外教程/博客 =====
+  # ===== AI教程/工具评测 =====
   - name: "MarkTechPost"
     url: "https://www.marktechpost.com/"
     url_pattern: "marktechpost\\.com/\\d+/\\d+/\\d+/"
-    max_scan: 5
+    max_scan: 8
 
   - name: "The Decoder"
     url: "https://the-decoder.com/"
@@ -103,58 +55,99 @@ sources:
   - name: "Unite.AI"
     url: "https://www.unite.ai/"
     url_pattern: "unite\\.ai/[a-z0-9][a-z0-9-]+/"
+    max_scan: 8
+
+  - name: "Superhuman AI"
+    url: "https://www.superhuman.ai/"
+    url_pattern: "superhuman\\.ai/p/[a-z0-9-]+"
     max_scan: 5
 
+  - name: "Future Tools"
+    url: "https://www.futuretools.io/news"
+    url_pattern: "futuretools\\.io/news/[a-z0-9-]+"
+    max_scan: 5
+
+  # ===== AI Newsletter/博客 =====
   - name: "The Rundown AI"
     url: "https://www.therundown.ai/"
     url_pattern: "therundown\\.ai/p/[a-z0-9-]+"
     max_scan: 5
 
-  - name: "DeepLearning.AI"
+  - name: "DeepLearning.AI Batch"
     url: "https://www.deeplearning.ai/the-batch/"
     url_pattern: "deeplearning\\.ai/the-batch/issue-\\d+/"
     max_scan: 3
+
+  - name: "The AI Edge"
+    url: "https://newsletter.theaiedge.io/"
+    url_pattern: "theaiedge\\.io/p/[a-z0-9-]+"
+    max_scan: 5
 
   - name: "Simon Willison"
     url: "https://simonwillison.net/tags/ai/"
     url_pattern: "simonwillison\\.net/\\d+/"
     max_scan: 5
 
+  - name: "Lilian Weng"
+    url: "https://lilianweng.github.io/"
+    url_pattern: "lilianweng\\.github\\.io/posts/"
+    max_scan: 3
+
+  # ===== 官方博客 =====
   - name: "OpenAI Blog"
     url: "https://openai.com/blog"
     url_pattern: "openai\\.com/index/[a-z0-9-]+"
-    max_scan: 3
+    max_scan: 5
 
   - name: "Anthropic"
     url: "https://www.anthropic.com/news"
     url_pattern: "anthropic\\.com/news/[a-z0-9-]+"
-    max_scan: 3
+    max_scan: 5
 
-  - name: "Meta AI"
+  - name: "Meta AI Blog"
     url: "https://ai.meta.com/blog/"
     url_pattern: "ai\\.meta\\.com/blog/[a-z0-9-]+/"
+    max_scan: 5
+
+  - name: "Google AI Blog"
+    url: "https://blog.google/technology/ai/"
+    url_pattern: "blog\\.google/technology/ai/"
+    max_scan: 5
+
+  # ===== 开发者/技术教程 =====
+  - name: "LangChain Blog"
+    url: "https://blog.langchain.dev/"
+    url_pattern: "blog\\.langchain\\.dev/[a-z0-9-]+/"
+    max_scan: 5
+
+  - name: "HuggingFace Blog"
+    url: "https://huggingface.co/blog"
+    url_pattern: "huggingface\\.co/blog/[a-z0-9-]+"
+    max_scan: 5
+
+  - name: "PyTorch Blog"
+    url: "https://pytorch.org/blog/"
+    url_pattern: "pytorch\\.org/blog/[a-z0-9-]+/"
     max_scan: 3
 
-  # ===== 社区/论坛 =====
-  - name: "V2EX AI"
-    url: "https://www.v2ex.com/go/ai"
-    url_pattern: "v2ex\\.com/t/\\d+"
+  - name: "Medium AI"
+    url: "https://medium.com/tag/artificial-intelligence/recommended"
+    url_pattern: "medium\\.com/"
     max_scan: 8
-
-  - name: "Linux.do AI"
-    url: "https://linux.do/c/ai/57"
-    url_pattern: "linux\\.do/t/topic/\\d+"
-    max_scan: 8
-
-  - name: "TopAI Tools"
-    url: "https://topai.tools/"
-    url_pattern: "topai\\.tools/t/[a-z0-9-]+"
-    max_scan: 5
 
   - name: "Towards Data Science"
     url: "https://towardsdatascience.com/"
     url_pattern: "towardsdatascience\\.com/[a-z0-9-]+"
     max_scan: 5
+
+  # ===== 社区 =====
+  - name: "Reddit AI"
+    url: "https://www.reddit.com/r/artificial/hot/"
+    max_scan: 0
+
+  - name: "Hacker News AI"
+    url: "https://hn.algolia.com/?dateRange=last24h&page=0&prefix=true&query=AI&sort=byPopularity&type=story"
+    max_scan: 0
 
   # ===== 论文 =====
   - name: "HuggingFace Papers"

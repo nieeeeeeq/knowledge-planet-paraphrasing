@@ -65,10 +65,12 @@ export async function filterArticles(
 - 0-4分：纯新闻快讯、融资报道、人事变动、政策法规
 
 注意：
-- 有些文章没有标题，需要根据URL路径中的英文关键词来推断内容
-- 来自 Unite.AI、MarkTechPost、appinn、freedidi 的文章通常是教程类
-- 来自 Simon Willison、DeepLearning.AI 的文章通常是深度技术博客
-- URL中包含 tutorial、guide、how-to、best、tools、介绍 等关键词的可能是教程
+- 所有文章来自海外英文站点，根据英文标题和URL判断内容类型
+- 来自 Unite.AI、MarkTechPost、The Decoder 的文章通常是教程/评测类
+- 来自 Simon Willison、DeepLearning.AI、Lilian Weng 的文章通常是深度技术博客
+- 来自 OpenAI、Anthropic、Meta AI 的是官方博客，通常是产品介绍
+- 来自 LangChain、HuggingFace、PyTorch 的是开发者教程
+- URL/标题中包含 tutorial、guide、how-to、best、tools、introduction、getting-started 等关键词的大概率是教程
 
 必须输出纯JSON数组，不要用代码块包裹，不要输出其他内容：
 [{"index":1,"score":8,"reason":"ChatGPT使用教程"},{"index":2,"score":3,"reason":"融资新闻"}]`,
