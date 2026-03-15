@@ -6,6 +6,7 @@
     "digest": "tsx scripts/digest.ts",
     "rewrite": "tsx scripts/rewrite-single.ts",
     "auto-rewrite": "tsx scripts/auto-rewrite.ts",
+    "spinbot": "tsx spinbot/index.ts",
     "test": "tsx scripts/test.ts"
   },
   "dependencies": {
