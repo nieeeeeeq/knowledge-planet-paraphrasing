@@ -2,8 +2,8 @@ name: Daily AI Digest
 
 on:
   schedule:
-    # UTC 22:00 = 北京时间 6:00
-    - cron: '0 22 * * *'
+    # UTC 1:00 = 北京时间 9:00
+    - cron: '0 1 * * *'
   workflow_dispatch:
 
 env:
