@@ -29,7 +29,6 @@ rewrite:
   add_summary: true
   min_length: 800
   max_length: 5000
-  # 非中文内容翻译为中文
   translate_to_zh: true
 
 # 发布
@@ -39,12 +38,38 @@ publish:
   hugo_dir: "blog"
   interval_minutes: 30
 
-# 数据源（全部海外站点）
+# 数据源（全部海外教程类站点）
 sources:
-  # ===== AI教程/工具评测 =====
-  - name: "MarkTechPost"
-    url: "https://www.marktechpost.com/"
-    url_pattern: "marktechpost\\.com/\\d+/\\d+/\\d+/"
+  # ===== AI教程平台 =====
+  - name: "DataCamp Tutorial"
+    url: "https://www.datacamp.com/tutorial"
+    url_pattern: "datacamp\\.com/tutorial/[a-z0-9-]+"
+    max_scan: 8
+
+  - name: "Learn Prompting"
+    url: "https://learnprompting.org/blog"
+    url_pattern: "learnprompting\\.org/blog/[a-z0-9-]+"
+    max_scan: 8
+
+  - name: "freeCodeCamp AI"
+    url: "https://www.freecodecamp.org/news/tag/ai/"
+    url_pattern: "freecodecamp\\.org/news/[a-z0-9-]+/"
+    max_scan: 8
+
+  - name: "Analytics Vidhya"
+    url: "https://www.analyticsvidhya.com/blog/"
+    url_pattern: "analyticsvidhya\\.com/blog/\\d+/\\d+/[a-z0-9-]+/"
+    max_scan: 8
+
+  - name: "SitePoint AI"
+    url: "https://www.sitepoint.com/ai/"
+    url_pattern: "sitepoint\\.com/[a-z0-9-]+/"
+    max_scan: 8
+
+  # ===== AI工具评测/榜单 =====
+  - name: "Unite.AI"
+    url: "https://www.unite.ai/"
+    url_pattern: "unite\\.ai/[a-z0-9][a-z0-9-]+/"
     max_scan: 8
 
   - name: "The Decoder"
@@ -52,25 +77,62 @@ sources:
     url_pattern: "the-decoder\\.com/[a-z0-9][a-z0-9-]+[a-z0-9]/"
     max_scan: 8
 
-  - name: "Unite.AI"
-    url: "https://www.unite.ai/"
-    url_pattern: "unite\\.ai/[a-z0-9][a-z0-9-]+/"
+  - name: "MarkTechPost"
+    url: "https://www.marktechpost.com/"
+    url_pattern: "marktechpost\\.com/\\d+/\\d+/\\d+/"
     max_scan: 8
 
+  # ===== 技术博客（深度教程）=====
+  - name: "Sebastian Raschka"
+    url: "https://sebastianraschka.com/blog/"
+    url_pattern: "sebastianraschka\\.com/blog/\\d+/"
+    max_scan: 5
+
+  - name: "Jay Alammar"
+    url: "https://jalammar.github.io/"
+    url_pattern: "jalammar\\.github\\.io/[a-z0-9-]+/"
+    max_scan: 5
+
+  - name: "Lilian Weng"
+    url: "https://lilianweng.github.io/"
+    url_pattern: "lilianweng\\.github\\.io/posts/"
+    max_scan: 3
+
+  - name: "Simon Willison"
+    url: "https://simonwillison.net/tags/ai/"
+    url_pattern: "simonwillison\\.net/\\d+/"
+    max_scan: 5
+
+  # ===== 开发者教程（框架/SDK）=====
+  - name: "LangChain Blog"
+    url: "https://blog.langchain.dev/"
+    url_pattern: "blog\\.langchain\\.dev/[a-z0-9-]+/"
+    max_scan: 5
+
+  - name: "HuggingFace Blog"
+    url: "https://huggingface.co/blog"
+    url_pattern: "huggingface\\.co/blog/[a-z0-9-]+"
+    max_scan: 5
+
+  - name: "W&B Blog"
+    url: "https://wandb.ai/fully-connected"
+    url_pattern: "wandb\\.ai/fully-connected/"
+    max_scan: 5
+
+  # ===== AI Newsletter =====
   - name: "Superhuman AI"
     url: "https://www.superhuman.ai/"
     url_pattern: "superhuman\\.ai/p/[a-z0-9-]+"
     max_scan: 5
 
-  - name: "Future Tools"
-    url: "https://www.futuretools.io/news"
-    url_pattern: "futuretools\\.io/news/[a-z0-9-]+"
-    max_scan: 5
-
-  # ===== AI Newsletter/博客 =====
   - name: "The Rundown AI"
     url: "https://www.therundown.ai/"
     url_pattern: "therundown\\.ai/p/[a-z0-9-]+"
+    max_scan: 5
+
+  - name: "The AI Edge"
+    url: "https://newsletter.theaiedge.io/"
+    url_pattern: "theaiedge\\.io/p/[a-z0-9-]+"
     max_scan: 5
 
   - name: "DeepLearning.AI Batch"
@@ -78,20 +140,21 @@ sources:
     url_pattern: "deeplearning\\.ai/the-batch/issue-\\d+/"
     max_scan: 3
 
-  - name: "The AI Edge"
-    url: "https://newsletter.theaiedge.io/"
-    url_pattern: "theaiedge\\.io/p/[a-z0-9-]+"
-    max_scan: 5
+  # ===== 社区/论坛 =====
+  - name: "HackerNoon AI"
+    url: "https://hackernoon.com/tagged/ai"
+    url_pattern: "hackernoon\\.com/[a-z0-9-]+"
+    max_scan: 8
 
-  - name: "Simon Willison"
-    url: "https://simonwillison.net/tags/ai/"
-    url_pattern: "simonwillison\\.net/\\d+/"
-    max_scan: 5
+  - name: "Medium AI"
+    url: "https://medium.com/tag/artificial-intelligence/recommended"
+    url_pattern: "medium\\.com/"
+    max_scan: 8
 
-  - name: "Lilian Weng"
-    url: "https://lilianweng.github.io/"
-    url_pattern: "lilianweng\\.github\\.io/posts/"
-    max_scan: 3
+  - name: "Towards Data Science"
+    url: "https://towardsdatascience.com/"
+    url_pattern: "towardsdatascience\\.com/[a-z0-9-]+"
+    max_scan: 5
 
   # ===== 官方博客 =====
   - name: "OpenAI Blog"
@@ -108,52 +171,3 @@ sources:
     url: "https://ai.meta.com/blog/"
     url_pattern: "ai\\.meta\\.com/blog/[a-z0-9-]+/"
     max_scan: 5
-
-  - name: "Google AI Blog"
-    url: "https://blog.google/technology/ai/"
-    url_pattern: "blog\\.google/technology/ai/"
-    max_scan: 5
-
-  # ===== 开发者/技术教程 =====
-  - name: "LangChain Blog"
-    url: "https://blog.langchain.dev/"
-    url_pattern: "blog\\.langchain\\.dev/[a-z0-9-]+/"
-    max_scan: 5
-
-  - name: "HuggingFace Blog"
-    url: "https://huggingface.co/blog"
-    url_pattern: "huggingface\\.co/blog/[a-z0-9-]+"
-    max_scan: 5
-
-  - name: "PyTorch Blog"
-    url: "https://pytorch.org/blog/"
-    url_pattern: "pytorch\\.org/blog/[a-z0-9-]+/"
-    max_scan: 3
-
-  - name: "Medium AI"
-    url: "https://medium.com/tag/artificial-intelligence/recommended"
-    url_pattern: "medium\\.com/"
-    max_scan: 8
-
-  - name: "Towards Data Science"
-    url: "https://towardsdatascience.com/"
-    url_pattern: "towardsdatascience\\.com/[a-z0-9-]+"
-    max_scan: 5
-
-  # ===== 社区 =====
-  - name: "Reddit AI"
-    url: "https://www.reddit.com/r/artificial/hot/"
-    max_scan: 0
-
-  - name: "Hacker News AI"
-    url: "https://hn.algolia.com/?dateRange=last24h&page=0&prefix=true&query=AI&sort=byPopularity&type=story"
-    max_scan: 0
-
-  # ===== 论文 =====
-  - name: "HuggingFace Papers"
-    url: "https://huggingface.co/papers"
-    max_scan: 0
-
-  - name: "arXiv cs.AI"
-    url: "https://arxiv.org/list/cs.AI/recent"
-    max_scan: 0

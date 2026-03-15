@@ -17,3 +17,6 @@ scripts/dist/
 
 # Logs
 logs/
+
+# Preview output
+preview/

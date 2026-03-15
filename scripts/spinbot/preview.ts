@@ -8,6 +8,9 @@
  */
 
 import "dotenv/config";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 import OpenAI from "openai";
 import { fetchArticle } from "../fetch.js";
 import { splitArticle, type Segment } from "../split.js";
@@ -143,16 +146,28 @@ async function main() {
   // 4. 改写标题
   const newTitle = await rewriteTitle(client, article.title);
 
-  // 5. 输出
+  // 5. 保存到 preview 目录
+  const today = new Date().toISOString().split("T")[0];
+  const slug = newTitle
+    .replace(/[^\w\u4e00-\u9fff]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40);
+  const previewDir = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "preview");
+  if (!existsSync(previewDir)) mkdirSync(previewDir, { recursive: true });
+
+  const filePath = join(previewDir, `${today}-${slug}.md`);
+  const fileContent = `# ${newTitle}\n\n> 来源: ${url}\n> 字数: ${rewritten.length}\n\n---\n\n${rewritten}\n`;
+  writeFileSync(filePath, fileContent, "utf-8");
+
+  // 6. 终端输出
   console.log("═".repeat(60));
   console.log(`标题: ${newTitle}`);
   console.log(`来源: ${url}`);
+  console.log(`字数: ${rewritten.length}`);
+  console.log(`保存: ${filePath}`);
   console.log("═".repeat(60));
   console.log();
   console.log(rewritten);
-  console.log();
-  console.log("═".repeat(60));
-  console.log(`字数: ${rewritten.length}`);
 }
 
 main().catch((error) => {
