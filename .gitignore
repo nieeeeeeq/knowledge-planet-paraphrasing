@@ -14,3 +14,6 @@ scripts/dist/
 .env
 .env.*
 !.env.example
+
+# Logs
+logs/

@@ -6,10 +6,11 @@
 
 | 项目 | 说明 | 获取方式 |
 |------|------|---------|
-| GitHub 仓库 | 本项目代码 | `git clone` 本仓库 |
-| 智谱 API Key | 用于 AI 汇总 | https://open.bigmodel.cn 注册获取 |
-| 知识星球 Cookie | 用于发帖 | 浏览器开发者工具获取（见下文） |
-| 知识星球 Group ID | 你的星球 ID | 星球 URL 中获取（见下文） |
+| Node.js 20+ | 运行环境 | https://nodejs.org |
+| Git | 代码管理 | `brew install git` |
+| 智谱 API Key | AI 汇总 | https://open.bigmodel.cn 注册 |
+| 知识星球 Cookie | 发帖凭证 | 浏览器获取（见下文） |
+| 知识星球 Group ID | 星球 ID | 星球 URL 中获取（见下文） |
 
 ## 二、获取知识星球凭证
 
@@ -18,7 +19,7 @@
 1. 浏览器打开 https://wx.zsxq.com 并登录
 2. 按 F12 → Network 标签
 3. 随便点一个请求，找到 Request Headers 中的 `Cookie`
-4. 复制 `zsxq_access_token=xxx` 部分（不需要其他 cookie）
+4. 复制 `zsxq_access_token=xxx` 部分
 
 ### 获取 Group ID
 
@@ -26,71 +27,30 @@
 2. URL 格式为 `https://wx.zsxq.com/group/xxxxx`
 3. `xxxxx` 就是 Group ID
 
-> Cookie 有效期约 29 天，过期后需要重新登录获取。
+> Cookie 有效期约 29 天，过期后需重新登录获取。
 
-## 三、配置 GitHub Secrets
-
-进入仓库 → Settings → Secrets and variables → Actions → New repository secret，添加以下三个：
-
-| Secret 名称 | 值 |
-|-------------|---|
-| `ZHIPU_API_KEY` | 智谱 API Key |
-| `ZSXQ_COOKIE` | `zsxq_access_token=你的token` |
-| `ZSXQ_GROUP_ID` | 星球群组 ID |
-
-## 四、工作流说明
-
-### 每日日报（daily-digest.yml）
-
-- **触发时间**：每天 UTC 1:00（北京时间 9:00）
-- **也可手动触发**：仓库 → Actions → Daily AI Digest → Run workflow
-
-**流程**：
-
-```
-12个数据源抓取 (~52篇文章)
-    ↓
-智谱 GLM-5 汇总为6个板块
-    ↓
-├── 写入 Hugo：content/cn/2026-03/2026-03-15.md
-└── 发布知识星球：纯文本格式自动转换
-    ↓
-Git 自动提交推送
-```
-
-### 手动改写（rewrite-single.yml）
-
-仓库 → Actions → Rewrite Article → Run workflow：
-
-- **url**：要改写的文章 URL
-- **intensity**：改写强度（light / medium / heavy）
-- **publish_zsxq**：是否同时发布到知识星球
-
-### 自动改写（auto-rewrite.yml）
-
-- **触发时间**：每 6 小时
-- 自动从配置的数据源抓取并改写文章
-
-## 五、本地开发和测试
-
-### 安装依赖
+## 三、安装
 
 ```bash
-cd scripts
+cd /Users/q/Code/knowledge-planet-paraphrasing/scripts
 npm install
 ```
 
-### 配置环境变量
+## 四、配置环境变量
 
 ```bash
 cp .env.example .env
-# 编辑 .env 填入实际值：
-# ZHIPU_API_KEY=your_key
-# ZSXQ_COOKIE=zsxq_access_token=xxx
-# ZSXQ_GROUP_ID=your_group_id
 ```
 
-### 测试命令
+编辑 `scripts/.env`：
+
+```
+ZHIPU_API_KEY=你的智谱API密钥
+ZSXQ_COOKIE=zsxq_access_token=你的token
+ZSXQ_GROUP_ID=你的星球群组ID
+```
+
+## 五、测试
 
 ```bash
 cd scripts
@@ -101,19 +61,129 @@ npx tsx test-digest.ts --fetch-only
 # 2. 抓取 + AI汇总预览（不写文件，不发帖）
 npx tsx test-digest.ts --dry-run
 
-# 3. 完整流程（写Hugo文件，不发知识星球）
-npx tsx test-digest.ts
-
-# 4. 完整流程 + 发布到知识星球
+# 3. 完整流程（写Hugo + 发知识星球）
 npx tsx test-digest.ts --publish-zsxq
-
-# 5. 测试单个URL
-npx tsx test-digest.ts --url https://www.aibase.com/news/26212
 ```
 
-## 六、数据源配置
+## 六、设置每天 9:00 自动执行
 
-编辑 `config/sources.yaml` 添加或修改数据源：
+### macOS crontab
+
+```bash
+crontab -e
+```
+
+添加以下行：
+
+```
+0 9 * * * /Users/q/Code/knowledge-planet-paraphrasing/scripts/run-digest.sh >> /Users/q/Code/knowledge-planet-paraphrasing/logs/cron.log 2>&1
+```
+
+验证：
+
+```bash
+crontab -l
+```
+
+### macOS launchd（推荐，睡眠唤醒后也能补执行）
+
+创建配置文件：
+
+```bash
+cat > ~/Library/LaunchAgents/com.ai-digest.daily.plist << 'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.ai-digest.daily</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/q/Code/knowledge-planet-paraphrasing/scripts/run-digest.sh</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>9</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/Users/q/Code/knowledge-planet-paraphrasing/logs/launchd.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/q/Code/knowledge-planet-paraphrasing/logs/launchd-error.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+    </dict>
+</dict>
+</plist>
+EOF
+```
+
+加载启动：
+
+```bash
+launchctl load ~/Library/LaunchAgents/com.ai-digest.daily.plist
+```
+
+管理命令：
+
+```bash
+# 查看状态
+launchctl list | grep ai-digest
+
+# 手动触发一次
+launchctl start com.ai-digest.daily
+
+# 停止
+launchctl unload ~/Library/LaunchAgents/com.ai-digest.daily.plist
+```
+
+### Linux 服务器 (VPS)
+
+```bash
+crontab -e
+```
+
+```
+0 9 * * * cd /path/to/knowledge-planet-paraphrasing/scripts && /usr/bin/bash run-digest.sh >> ../logs/cron.log 2>&1
+```
+
+## 七、执行流程
+
+```
+每天 9:00
+  ↓
+run-digest.sh
+  ↓
+加载 .env 环境变量
+  ↓
+运行 digest.ts
+  ├── 12个数据源抓取 (~52篇文章)
+  ├── 智谱 GLM-5 汇总6个板块
+  ├── 写入 Hugo: content/cn/YYYY-MM/YYYY-MM-DD.md
+  └── 发布知识星球 (纯文本自动转换)
+  ↓
+Git 自动提交推送
+  ↓
+清理30天前日志
+```
+
+## 八、日志查看
+
+```bash
+# 查看今天的日志
+cat logs/digest-$(date +%Y-%m-%d).log
+
+# 查看最近日志
+ls -lt logs/ | head
+```
+
+## 九、数据源配置
+
+编辑 `config/sources.yaml`：
 
 ```yaml
 sources:
@@ -121,9 +191,9 @@ sources:
     url: "https://example.com/news"
     type: webpage
     mode: digest          # digest | rewrite | both
-    fetch_mode: list      # list (逐篇抓取) | single (整页抓取)
-    url_pattern: "example\\.com/article/\\d+"  # 文章URL正则
-    max_articles: 10      # 最多抓取篇数
+    fetch_mode: list      # list (逐篇) | single (整页)
+    url_pattern: "example\\.com/article/\\d+"
+    max_articles: 10
 ```
 
 当前 12 个数据源：
@@ -136,46 +206,48 @@ sources:
 | 开源项目 | GitHub Trending |
 | 社媒论坛 | Reddit AI、Hacker News AI |
 
-## 七、知识星球 Cookie 维护
+## 十、知识星球 Cookie 维护
 
-Cookie 有效期约 **29 天**。建议：
+Cookie 有效期约 **29 天**。
 
-1. 在日历中设置每 25 天提醒
-2. 登录 https://wx.zsxq.com 获取新 Cookie
-3. 更新 GitHub Secrets 中的 `ZSXQ_COOKIE`
-
-**判断 Cookie 是否过期**：
+**检查是否过期**：
 
 ```bash
 curl -s 'https://api.zsxq.com/v2/settings' \
   -b 'zsxq_access_token=你的token' \
-  -H 'origin: https://wx.zsxq.com' \
-  -H 'referer: https://wx.zsxq.com/' | python3 -m json.tool
+  -H 'origin: https://wx.zsxq.com' | python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+if d.get('succeeded'):
+    print('有效')
+else:
+    print('已过期，请重新获取')
+"
 ```
 
-- 返回 `"succeeded": true` → 有效
-- 返回 `"succeeded": false` → 已过期，需要更新
+**更新步骤**：
 
-## 八、常见问题
+1. 浏览器登录 https://wx.zsxq.com
+2. F12 复制新 Cookie
+3. 编辑 `scripts/.env` 更新 `ZSXQ_COOKIE`
+
+## 十一、常见问题
 
 ### Q: 知识星球发布失败？
+- 检查 Cookie 是否过期
+- 检查 Group ID 是否正确
+- 当日是否已超 5 篇限制
 
-1. 检查 Cookie 是否过期
-2. 检查 Group ID 是否正确
-3. 检查当日是否已达到发帖上限（默认 5 篇/天）
+### Q: 抓取 0 篇文章？
+- Jina Reader 可能限流，等几分钟重试
+- 检查 `url_pattern` 正则是否匹配
 
-### Q: 抓取结果为 0 篇？
+### Q: cron 没有执行？
+- macOS 需要给终端"完全磁盘访问"权限（系统设置 → 隐私与安全 → 完全磁盘访问）
+- 检查 `which node` 和 `which npx` 路径是否在 cron 的 PATH 中
+- 推荐用 launchd 替代 crontab
 
-1. Jina Reader 可能被限流，等几分钟重试
-2. 检查 `url_pattern` 正则是否匹配目标站点的文章链接格式
-
-### Q: AI 汇总质量不佳？
-
-1. 检查 `scripts/summarizer.ts` 中的 prompt
-2. 确保抓取到足够多的文章（建议 > 20 篇）
-
-### Q: GitHub Actions 运行失败？
-
-1. 检查 Actions → 对应 workflow → 查看运行日志
-2. 确认三个 Secrets 都已正确配置
-3. 确认 `scripts/package.json` 依赖安装无误
+### Q: 手动执行一次？
+```bash
+cd scripts && ./run-digest.sh
+```
