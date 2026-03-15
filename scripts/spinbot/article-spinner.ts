@@ -46,12 +46,17 @@ export async function spinArticle(
   const client = createClient();
   const fullText = segments.map((s) => s.text).join("\n\n");
 
+  // 截断过长文章，避免分段过多导致API调用超时或审核失败
+  const maxInputLength = 6000;
+  const trimmedSegments = trimSegments(segments, maxInputLength);
+  const trimmedText = trimmedSegments.map((s) => s.text).join("\n\n");
+
   // 如果文章不太长，整篇一次改写（效果更好）
   let rewritten: string;
-  if (fullText.length < 4000) {
-    rewritten = await spinFullArticle(client, fullText, config);
+  if (trimmedText.length < 4000) {
+    rewritten = await spinFullArticle(client, trimmedText, config);
   } else {
-    rewritten = await spinBySegments(client, segments, config);
+    rewritten = await spinBySegments(client, trimmedSegments, config);
   }
 
   // 补充引言
@@ -111,25 +116,32 @@ async function spinBySegments(
   let previousContext = "";
 
   for (const seg of segments) {
-    const contextNote = previousContext
-      ? `\n\n前文改写结果末尾（保持衔接）：\n${previousContext.slice(-200)}`
-      : "";
+    try {
+      const contextNote = previousContext
+        ? `\n\n前文改写结果末尾（保持衔接）：\n${previousContext.slice(-200)}`
+        : "";
 
-    const response = await client.chat.completions.create({
-      model: MODEL,
-      max_tokens: 4096,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        {
-          role: "user",
-          content: `请深度改写以下段落：${contextNote}\n\n---\n${seg.text}\n---\n\n直接输出改写结果。`,
-        },
-      ],
-    });
+      const response = await client.chat.completions.create({
+        model: MODEL,
+        max_tokens: 4096,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          {
+            role: "user",
+            content: `请深度改写以下段落：${contextNote}\n\n---\n${seg.text}\n---\n\n直接输出改写结果。`,
+          },
+        ],
+      });
 
-    const result = response.choices[0].message.content?.trim() || "";
-    rewrittenParts.push(result);
-    previousContext = result;
+      const result = response.choices[0].message.content?.trim() || "";
+      if (result) {
+        rewrittenParts.push(result);
+        previousContext = result;
+      }
+    } catch (e) {
+      // 跳过审核失败的段落
+      console.log(`    ⚠️ 段落改写跳过: ${e instanceof Error ? e.message.slice(0, 80) : "unknown"}`);
+    }
   }
 
   // 全文润色
@@ -180,6 +192,27 @@ async function addSummary(client: OpenAI, content: string): Promise<string> {
   });
   const summary = response.choices[0].message.content?.trim() || "";
   return summary ? content + "\n\n" + summary : content;
+}
+
+/**
+ * 截断段落列表，使总长度不超过 maxLength
+ */
+function trimSegments(segments: Segment[], maxLength: number): Segment[] {
+  const result: Segment[] = [];
+  let total = 0;
+  for (const seg of segments) {
+    if (total + seg.text.length > maxLength) {
+      // 截断最后一段
+      const remaining = maxLength - total;
+      if (remaining > 200) {
+        result.push({ ...seg, text: seg.text.slice(0, remaining), charCount: remaining });
+      }
+      break;
+    }
+    result.push(seg);
+    total += seg.text.length;
+  }
+  return result;
 }
 
 async function spinTitle(client: OpenAI, title: string): Promise<string> {
