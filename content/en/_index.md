@@ -36,12 +36,12 @@ Hexi 2077's AI News Hub
 
 {{< cards cols="3" >}}
 <!-- LATEST_6_CARDS_START -->
-{{< card link="/en/2026-03/2026-03-14" title="AI News Daily 2026/03/14" subtitle="Gemini mobile automates cross-app tasks, Claude plugins enable cross-application" icon="calendar" >}}
+{{< card link="/en/2026-03/2026-03-15" title="AI News Daily 2026/03/15" subtitle="Claude百万token上下文全面开放，支持600张图片 360发布安全龙虾系列，阿里开源Qwen3-ASR语音模型 科技裁员达4.5万人，Meta模型Avocado延期且倾向闭源 OpenViki" icon="calendar" >}}
+  {{< card link="/en/2026-03/2026-03-14" title="AI News Daily 2026/03/14" subtitle="Gemini mobile automates cross-app tasks, Claude plugins enable cross-application" icon="calendar" >}}
   {{< card link="/en/2026-03/2026-03-13" title="AI News Daily 2026/03/13" subtitle="Aishi Technology announces C-round funding and PixVerse R1; Tencent E'xia" icon="calendar" >}}
   {{< card link="/en/2026-03/2026-03-12" title="AI News Daily 2026/03/12" subtitle="Replit Agent 4 Launches, Valuation Soars to $9 Billion; Perplexity Unveils" icon="calendar" >}}
   {{< card link="/en/2026-03/2026-03-11" title="AI News Daily 2026/03/11" subtitle="NVIDIA invests $50 billion in Thinking Machines, LeCun founds AMI with" icon="calendar" >}}
   {{< card link="/en/2026-03/2026-03-10" title="AI News Daily 2026/03/10" subtitle="Microsoft Phi-4 multimodal, Tencent launches Penguin-VL vision-language" icon="calendar" >}}
-  {{< card link="/en/2026-03/2026-03-09" title="AI News Daily 2026/03/09" subtitle="Claude Code Hidden Switch Boosts Speed by 600x Gauss Agent Proves Fields-Medal" icon="calendar" >}}
 <!-- LATEST_6_CARDS_END -->
 {{< /cards >}}
 
@@ -53,7 +53,7 @@ Hexi 2077's AI News Hub
 The [AI Weekly](/en/blog/weekly/) is your ideal starting point for newcomers! It's designed to help you quickly grasp crucial industry shifts, preventing you from getting lost in fragmented information. Let's get you up to speed!
 
 ### 2. Stay in Daily Sync
-The [AI Daily Archive](/en/2026-03/2026-03-14) is your go-to for staying on the cutting edge! Just 5 minutes a day will keep you perfectly aligned with the global AI pulse. Stay sharp! ⚡
+The [AI Daily Archive](/en/2026-03/2026-03-15) is your go-to for staying on the cutting edge! Just 5 minutes a day will keep you perfectly aligned with the global AI pulse. Stay sharp! ⚡
 
 ### 3. Explore Deeper Practice
 The [Blog](/en/blog/) is where you should dive in for deeper practice! It offers structured guides on AI tools, workflows, and boosting your productivity. Unleash your inner tech wizard! 💡
