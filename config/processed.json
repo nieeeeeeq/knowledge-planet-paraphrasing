@@ -1,10 +1,5 @@
 {
   "urls": [
-    "https://app.aibase.com/submission",
-    "https://model.aibase.com/llm",
-    "https://www.qbitai.com/category/zhiku",
-    "https://www.qbitai.com/category/huodong",
-    "https://www.qbitai.com/meet/meet2026/",
     "https://model.aibase.com/leaderboard/text-generation",
     "https://model.aibase.com/providers",
     "https://model.aibase.com/compare",
@@ -499,7 +494,12 @@
     "https://news.aibase.com/daily",
     "https://www.qbitai.com/2026/04/403505.html",
     "https://www.qbitai.com/tag/gui",
-    "https://www.qbitai.com/2026/04/403126.html"
+    "https://www.qbitai.com/2026/04/403126.html",
+    "https://app.aibase.com/discover",
+    "https://app.aibase.com/best-ai-tools/",
+    "http://www.qbitai.com/",
+    "https://www.qbitai.com/category/%e8%b5%84%e8%ae%af",
+    "https://www.qbitai.com/category/auto"
   ],
-  "lastRun": "2026-04-19T19:03:59.167Z"
+  "lastRun": "2026-04-20T03:43:18.999Z"
 }
