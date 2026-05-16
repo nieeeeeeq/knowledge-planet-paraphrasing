@@ -1,8 +1,5 @@
 {
   "urls": [
-    "https://www.aibase.com/news/26891",
-    "https://i.qbitai.com/wp-content/uploads/2026/04/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260407165923_354_9.png",
-    "https://i.qbitai.com/wp-content/uploads/2026/04/76f2099a3871aa5314ef3b0b22a9f202-e1775551547597.png",
     "https://www.qbitai.com/2026/04/397610.html",
     "https://www.aibase.com/zh/news/26899",
     "https://www.aibase.com/zh/news/26891",
@@ -499,7 +496,10 @@
     "https://www.qbitai.com/?author=12",
     "https://www.qbitai.com/2026/05/418140.html",
     "https://www.qbitai.com/2026/05/417961.html",
-    "https://www.qbitai.com/tag/%e7%99%be%e7%81%b5"
+    "https://www.qbitai.com/tag/%e7%99%be%e7%81%b5",
+    "https://www.qbitai.com/tag/%e8%9a%82%e8%9a%81",
+    "https://www.qbitai.com/2026/05/417958.html",
+    "https://www.qbitai.com/tag/claude"
   ],
-  "lastRun": "2026-05-15T19:48:47.240Z"
+  "lastRun": "2026-05-16T03:52:07.340Z"
 }
