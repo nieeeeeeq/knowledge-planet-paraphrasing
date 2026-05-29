@@ -1,11 +1,5 @@
 {
   "urls": [
-    "https://model.aibase.com/providers",
-    "https://model.aibase.com/leaderboard/text-generation",
-    "https://model.aibase.com/compare",
-    "https://www.qbitai.com/meet/aigc2025/",
-    "https://www.qbitai.com/",
-    "https://i.qbitai.com/wp-content/uploads/2026/04/cb4e07947a3d5969c1e088adfcc78385.gif",
     "https://mcp.aibase.com/explore",
     "https://model.aibase.com/calculator",
     "https://model.aibase.com/arena",
@@ -499,7 +493,13 @@
     "https://www.aibase.com/zh/news/28470",
     "http://www.qbitai.com/",
     "https://www.qbitai.com/category/%e8%b5%84%e8%ae%af",
-    "https://i.qbitai.com/wp-content/uploads/2026/05/073496abfcd419b1d1ccd5b681cbb947-e1780045523512.jpeg"
+    "https://i.qbitai.com/wp-content/uploads/2026/05/073496abfcd419b1d1ccd5b681cbb947-e1780045523512.jpeg",
+    "https://app.aibase.com/submission",
+    "https://model.aibase.com/llm",
+    "https://www.aibase.com/news/28470",
+    "https://www.qbitai.com/category/auto",
+    "https://www.qbitai.com/category/zhiku",
+    "https://www.qbitai.com/category/huodong"
   ],
-  "lastRun": "2026-05-29T10:10:06.590Z"
+  "lastRun": "2026-05-29T16:03:46.290Z"
 }
