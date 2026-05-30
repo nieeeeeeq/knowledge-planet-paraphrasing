@@ -1,11 +1,5 @@
 {
   "urls": [
-    "https://mcp.aibase.com/submit",
-    "https://mcp.aibase.com/playground",
-    "https://mcp.aibase.com/inspector",
-    "https://i.qbitai.com/wp-content/uploads/2026/04/301cd061228667a86adfb5da06cf3fa7.webp",
-    "https://www.qbitai.com/2026/04/403872.html",
-    "https://www.qbitai.com/2026/04/403867.html",
     "https://geo.aibase.com/",
     "https://app.aibase.com/tools/trackers",
     "https://app.aibase.com/tools/geo",
@@ -499,7 +493,13 @@
     "https://model.aibase.com/arena",
     "https://www.qbitai.com/wp-content/uploads/2019/01/qrcode_QbitAI_1.jpg",
     "https://i.qbitai.com/wp-content/uploads/2026/05/2d378aa0f3424f0f34dda515efcb3924-e1780044819235.png",
-    "https://www.qbitai.com/2026/05/426557.html"
+    "https://www.qbitai.com/2026/05/426557.html",
+    "https://mcp.aibase.com/client",
+    "https://mcp.aibase.com/server/doc",
+    "https://mcp.aibase.com/ranking",
+    "https://www.qbitai.com/2026/05/426706.html",
+    "https://www.qbitai.com/2026/05/426662.html",
+    "https://www.qbitai.com/tag/%e4%b8%96%e7%95%8c%e6%a8%a1%e5%9e%8b"
   ],
-  "lastRun": "2026-05-30T04:09:30.244Z"
+  "lastRun": "2026-05-30T08:37:49.195Z"
 }
