@@ -1,9 +1,5 @@
 {
   "urls": [
-    "https://news.aibase.com/daily",
-    "https://www.aibase.com/zh/news/28450",
-    "https://www.qbitai.com/2026/05/426353.html",
-    "https://www.qbitai.com/2026/05/426314.html",
     "https://www.qbitai.com/2026/05/425959.html",
     "https://app.aibase.com/discover",
     "https://app.aibase.com/best-ai-tools/",
@@ -499,7 +495,11 @@
     "https://www.qbitai.com/2026/07/442452.html",
     "https://i.qbitai.com/wp-content/uploads/2026/07/%E5%A4%A7%E5%9B%BE.jpg",
     "https://www.qbitai.com/2026/07/443606.html",
-    "https://www.qbitai.com/2026/07/444043.html"
+    "https://www.qbitai.com/2026/07/444043.html",
+    "https://news.aibase.com/news",
+    "https://www.qbitai.com/2026/07/444733.html",
+    "https://www.qbitai.com/2026/07/444721.html",
+    "https://www.qbitai.com/tag/%e6%b8%85%e5%8d%8e%e5%a4%a7%e5%ad%a6"
   ],
-  "lastRun": "2026-07-06T10:55:03.875Z"
+  "lastRun": "2026-07-06T15:51:16.718Z"
 }
