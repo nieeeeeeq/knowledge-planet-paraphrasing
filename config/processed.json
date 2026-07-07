@@ -1,10 +1,5 @@
 {
   "urls": [
-    "http://www.qbitai.com/",
-    "https://www.qbitai.com/category/%e8%b5%84%e8%ae%af",
-    "https://i.qbitai.com/wp-content/uploads/2026/05/073496abfcd419b1d1ccd5b681cbb947-e1780045523512.jpeg",
-    "https://app.aibase.com/submission",
-    "https://model.aibase.com/llm",
     "https://www.aibase.com/news/28470",
     "https://www.qbitai.com/category/auto",
     "https://www.qbitai.com/category/zhiku",
@@ -499,7 +494,12 @@
     "https://news.aibase.com/daily",
     "https://www.qbitai.com/tag/%e9%98%bf%e9%87%8c%e5%b7%b4%e5%b7%b4",
     "https://www.qbitai.com/2026/07/444049.html",
-    "https://www.qbitai.com/2026/07/443868.html"
+    "https://www.qbitai.com/2026/07/443868.html",
+    "https://app.aibase.com/discover",
+    "https://app.aibase.com/best-ai-tools/",
+    "https://i.qbitai.com/wp-content/uploads/2026/07/%E5%9B%BE%E5%B1%82-41-e1783388277480.png",
+    "https://www.qbitai.com/2026/07/445184.html",
+    "https://www.qbitai.com/2026/07/445067.html"
   ],
-  "lastRun": "2026-07-06T20:08:58.528Z"
+  "lastRun": "2026-07-07T04:09:35.847Z"
 }
