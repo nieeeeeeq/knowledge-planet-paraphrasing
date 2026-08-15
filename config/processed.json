@@ -1,10 +1,5 @@
 {
   "urls": [
-    "https://www.qbitai.com/2026/07/445443.html",
-    "https://mcp.aibase.com/explore",
-    "https://model.aibase.com/calculator",
-    "https://model.aibase.com/arena",
-    "https://www.qbitai.com/",
     "https://www.qbitai.com/wp-content/uploads/2019/01/qrcode_QbitAI_1.jpg",
     "https://www.qbitai.com/2026/07/445668.html",
     "https://mcp.aibase.com/client",
@@ -499,7 +494,12 @@
     "https://model.aibase.com/providers",
     "https://www.qbitai.com/category/auto",
     "https://www.qbitai.com/category/zhiku",
-    "https://www.qbitai.com/category/huodong"
+    "https://www.qbitai.com/category/huodong",
+    "https://model.aibase.com/leaderboard/text-generation",
+    "https://model.aibase.com/compare",
+    "https://www.qbitai.com/meet/meet2026/",
+    "https://i.qbitai.com/wp-content/uploads/2026/08/2f6984bd4b06f0070e027a4ec845a4a8.webp",
+    "https://www.qbitai.com/2026/08/473379.html"
   ],
-  "lastRun": "2026-08-14T19:04:19.566Z"
+  "lastRun": "2026-08-15T01:42:41.713Z"
 }
