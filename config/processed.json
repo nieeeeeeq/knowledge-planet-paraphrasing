@@ -1,10 +1,5 @@
 {
   "urls": [
-    "https://www.qbitai.com/2026/07/446778.html",
-    "https://i.qbitai.com/wp-content/uploads/2026/07/fdb46da552f6b8e7e2d5c69d1939a2ea.webp",
-    "https://www.qbitai.com/2026/07/446843.html",
-    "https://www.qbitai.com/2026/07/446658.html",
-    "https://www.qbitai.com/2026/07/446562.html",
     "https://www.qbitai.com/tag/ai%e6%95%99%e8%82%b2",
     "https://www.qbitai.com/tag/%e5%a4%a9%e7%ab%8b%e5%90%af%e9%b8%a3",
     "https://www.qbitai.com/2026/07/447597.html",
@@ -499,7 +494,12 @@
     "https://app.aibase.com/geo",
     "https://i.qbitai.com/wp-content/uploads/2026/08/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE-2026-08-16-132933-1-e1786858598704.png",
     "https://www.qbitai.com/2026/08/473947.html",
-    "https://www.qbitai.com/tag/anthropic"
+    "https://www.qbitai.com/tag/anthropic",
+    "https://model.aibase.com/tools/pc-check",
+    "https://model.aibase.com/tools/server-config-calculator",
+    "https://www.qbitai.com/2026/08/474140.html",
+    "https://www.qbitai.com/2026/08/474064.html",
+    "https://www.qbitai.com/2026/08/473149.html"
   ],
-  "lastRun": "2026-08-16T06:52:47.772Z"
+  "lastRun": "2026-08-16T12:53:42.167Z"
 }
