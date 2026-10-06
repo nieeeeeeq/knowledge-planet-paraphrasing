@@ -1,9 +1,5 @@
 {
   "urls": [
-    "https://www.aibase.com/news/30334",
-    "https://www.qbitai.com/2026/08/471884.html",
-    "https://www.qbitai.com/2026/08/471701.html",
-    "https://www.qbitai.com/tag/ilya",
     "https://app.aibase.com/discover",
     "https://app.aibase.com/best-ai-tools/",
     "https://www.qbitai.com/2026/08/472722.html",
@@ -499,7 +495,11 @@
     "https://www.qbitai.com/?author=47854",
     "https://news.aibase.com/news",
     "https://i.qbitai.com/wp-content/uploads/2026/09/%E5%9B%BE%E8%99%AB%E5%88%9B%E6%84%8F-2276685335249420301-e1790736761441.jpeg",
-    "https://i.qbitai.com/wp-content/uploads/2026/09/3e5f57576a43d6f4441fde5183f9e472.png"
+    "https://i.qbitai.com/wp-content/uploads/2026/09/3e5f57576a43d6f4441fde5183f9e472.png",
+    "https://news.aibase.com/daily",
+    "https://www.qbitai.com/2026/10/501746.html",
+    "https://www.qbitai.com/2026/10/501736.html",
+    "https://www.qbitai.com/?author=47860"
   ],
-  "lastRun": "2026-10-06T06:09:52.125Z"
+  "lastRun": "2026-10-06T18:16:13.246Z"
 }
