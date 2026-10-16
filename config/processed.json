@@ -1,10 +1,5 @@
 {
   "urls": [
-    "https://app.aibase.com/zh/tools/llm-health",
-    "https://www.qbitai.com/2026/08/476409.html",
-    "https://www.qbitai.com/2026/08/476403.html",
-    "https://www.qbitai.com/2026/08/476400.html",
-    "https://www.qbitai.com/meet/aigc2026/",
     "https://i.qbitai.com/wp-content/uploads/2026/08/579862ceed3cc79cf45b36b571b13fbf.webp",
     "https://i.qbitai.com/wp-content/uploads/2026/08/49e8c395995b0f0380f0c55995654975.gif",
     "https://www.qbitai.com/2026/08/476965.html",
@@ -499,7 +494,12 @@
     "https://www.aibase.com/zh/news/31687",
     "https://www.qbitai.com/tag/%e4%ba%a4%e5%a4%a7%e5%ae%89%e6%b3%b0",
     "https://www.qbitai.com/2026/10/503501.html",
-    "https://www.qbitai.com/2026/10/503497.html"
+    "https://www.qbitai.com/2026/10/503497.html",
+    "https://www.aibase.com/news/31700",
+    "https://www.aibase.com/news/31699",
+    "https://www.qbitai.com/2026/10/503865.html",
+    "https://www.qbitai.com/2026/10/503861.html",
+    "https://www.qbitai.com/2026/10/503843.html"
   ],
-  "lastRun": "2026-10-16T04:16:33.931Z"
+  "lastRun": "2026-10-16T11:12:12.648Z"
 }
