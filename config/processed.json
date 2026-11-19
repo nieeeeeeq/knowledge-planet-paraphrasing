@@ -1,9 +1,5 @@
 {
   "urls": [
-    "https://www.qbitai.com/?page_id=99",
-    "https://www.qbitai.com/?page_id=101",
-    "https://www.qbitai.com/?page_id=105",
-    "https://www.qbitai.com/2026/09/498546.html",
     "https://i.qbitai.com/wp-content/uploads/2026/09/ba7a1d378214e9ab22f7f2687f0734a0.png",
     "https://i.qbitai.com/wp-content/uploads/2026/09/b6164b8ed8a05f0c3c2b9268586c576e.webp",
     "https://i.qbitai.com/wp-content/uploads/2026/09/0e0c0ed6773e9cb32782eba578d79951.webp",
@@ -499,7 +495,11 @@
     "https://www.qbitai.com/2026/11/510737.html",
     "https://www.qbitai.com/2026/11/510922.html",
     "https://www.qbitai.com/2026/11/510914.html",
-    "https://www.qbitai.com/tag/openai"
+    "https://www.qbitai.com/tag/openai",
+    "https://www.aibase.com/news/32410",
+    "https://i.qbitai.com/wp-content/uploads/2026/11/Jason_and_Lucia_01_With_Logos_landscape-scaled-e1795076521965.jpg",
+    "https://i.qbitai.com/wp-content/uploads/2026/11/screenshot-20261119-145935.png",
+    "https://www.qbitai.com/2026/11/511258.html"
   ],
-  "lastRun": "2026-11-19T07:04:01.957Z"
+  "lastRun": "2026-11-19T20:25:38.455Z"
 }
